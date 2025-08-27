@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/.idea/KLP.iml" filepath="$PROJECT_DIR$/.idea/KLP.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/.idea/new.iml" filepath="$PROJECT_DIR$/.idea/new.iml" />
+>>>>>>> 8c572422fdbe11c7eda7144474ecf675737d10ad
     </modules>
   </component>
 </project>
