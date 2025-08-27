@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Black">
+<<<<<<< HEAD
+    <option name="sdkName" value="Python 3.13 (KeyLoggerProjectPycharm)" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.13 (PyCharmMiscProject)" project-jdk-type="Python SDK" />
+=======
     <option name="sdkName" value="Python 3.13 (new)" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.13 (new)" project-jdk-type="Python SDK" />
+>>>>>>> 8c572422fdbe11c7eda7144474ecf675737d10ad
 </project>
