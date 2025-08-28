@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
 from pynput import keyboard
-import time
 
 class IKeyLogger(ABC):
     @abstractmethod
