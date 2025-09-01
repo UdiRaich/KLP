@@ -1,12 +1,34 @@
+# Virtual environments
 venv/
 env/
 
+# Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
+# Logs and text outputs
 *.log
 
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
 .DS_Store
 Thumbs.db
+
+# Build / distribution
+*.egg-info/
+dist/
+build/
+
+# Databases
+*.sqlite3
+*.db
+
+# Environment / credentials
+.env
+config_local.py

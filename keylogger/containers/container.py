@@ -1,21 +1,11 @@
 import time
 from threading import Lock
+from utils.conversions_utils import convert_to_seconds
 
 
 class Container:
-    def __init__(self, interval_value=1, unit='seconds'):
-
-        if unit == 'seconds':
-            self.__interval = interval_value
-        elif unit == 'minutes':
-            self.__interval = interval_value * 60
-        elif unit == 'hours':
-            self.__interval = interval_value * 3600
-        elif unit == 'days':
-            self.__interval = interval_value * 86400
-        else:
-            raise ValueError("Invalid unit. Choose from 'seconds', 'minutes', 'hours', 'days'.")
-
+    def __init__(self, interval_value, unit):
+        self.__interval = convert_to_seconds(interval_value, unit)
         self.__last_updated_time = None
         self.__container = []
         self._lock = Lock()

