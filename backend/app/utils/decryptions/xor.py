@@ -1,4 +1,4 @@
-from decryptions.base import Decryption
+from .base import Decryption
 
 
 class Xor(Decryption):

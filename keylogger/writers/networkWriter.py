@@ -15,8 +15,8 @@ BACKOFF_FACTOR: float = 0.3
 
 class HttpWriter(IWriter):
 
-    def __init__(self, destination = "http://127.0.0.1:5000/update", timeout: float = 10.0) -> None:
-        super().__init__(destination)
+    def __init__(self, destination, machine_id:int,  timeout: float = 10.0) -> None:
+        super().__init__(destination, machine_id)
 
         self.__timeout = timeout
 
@@ -37,8 +37,8 @@ class HttpWriter(IWriter):
         self.session.mount("https://", adapter)
 
 
-    def send_data(self, data: Dict[str, Any], machine_name: str = "bla"):
-        req_headers = {"X-Machine-Name": machine_name}
+    def send_data(self, data: Dict[str, Any]) -> int:
+        req_headers = {"X-Machine-id": self._machine_id}
         try:
             resp = self.session.post(
                 self._destination,
@@ -46,9 +46,9 @@ class HttpWriter(IWriter):
                 headers=req_headers,
                 timeout=self.__timeout,
             )
-
             return resp.status_code
         except requests.exceptions.RequestException as e:
+            print(e)
             return None
 
 
